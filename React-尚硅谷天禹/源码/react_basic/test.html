@@ -7,21 +7,57 @@
   <script src="./js/react-dom.development.js"></script>
   <script src="./js/babel.min.js"></script>
   <script src="./js/prop-types.js"></script>
+  <style>
+  .list {
+    width: 300px;
+    height: 180px;
+    overflow: auto;
+    background: aquamarine;
+  }
+  .item{
+    height: 30px;
+  }
+  </style>
 </head>
 <body>
 <div id="app"></div>
 <script type="text/babel">
-  const VDOM = <h1>测试一下</h1>
-  /*function MyComponent(){
-    return <h2>我是函数式组件</h2>
-  }*/
-  class MyComponent extends React.Component {
-    render(){
-      return <h2>我是类式组件</h2>
-    }
+class MyComponent extends React.Component {
+state = {
+  arr: [],
+}
+componentDidMount(){
+/*  setInterval(() => {
+    const {arr} = this.state
+    let news = `新闻${arr.length + 1}`
+    this.setState({arr: [news, ...arr]})
+  }, 1000)*/
+}
+getSnapshotBeforeUpdate(){
+  return this.listRef.scrollHeight
+}
+componentDidUpdate(preProps, preState, height){
+  console.log("preProps",preProps)
+  console.log("preState",preState)
+  // console.log("新的this.listRef.scrollHeight",this.listRef.scrollHeight)
+  // console.log("旧的this.listRef.scrollHeight",height)
+  this.listRef.scrollTop += this.listRef.scrollHeight - height
+}
+  render(){
+  return (
+      <div className="list" ref={c => this.listRef = c}>
+        {
+          this.state.arr.map((item, index) => {
+            return <div key={index} className="item">{item}</div>
+          })
+        }
+      </div>
+      )
   }
-  const VDOM2 = React.createElement("h2", {}, "你好啊")
-  ReactDOM.render(<MyComponent/>, document.getElementById("app"))
+
+}
+
+ReactDOM.render(<MyComponent/>, document.getElementById('app'))
 </script>
 </body>
 </html>
